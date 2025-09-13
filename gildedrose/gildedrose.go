@@ -74,7 +74,6 @@ func (n *normalItem) updateQuality() {
 		n.Quality -= 2
 	} else {
 		n.Quality -= 1
-
 	}
 	if n.Quality > 50 {
 		n.Quality = 50
