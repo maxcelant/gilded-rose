@@ -5,7 +5,7 @@ type Item struct {
 	SellIn, Quality int
 }
 
-type exchangeable interface {
+type qualityUpdater interface {
 	updateQuality()
 }
 
@@ -82,21 +82,21 @@ func (n *normalItem) updateQuality() {
 	}
 }
 
-func itemFactory(i *Item) exchangeable {
-	var ex exchangeable
+func itemFactory(i *Item) qualityUpdater {
+	var qu qualityUpdater
 	switch n := i.Name; n {
 	case "Aged Brie":
-		ex = &agedBrie{i}
+		qu = &agedBrie{i}
 	case "Sulfuras, Hand of Ragnaros":
-		ex = &sulfuras{i}
+		qu = &sulfuras{i}
 	case "Backstage passes to a TAFKAL80ETC concert":
-		ex = &backstagePasses{i}
+		qu = &backstagePasses{i}
 	case "Conjured":
-		ex = &conjured{i}
+		qu = &conjured{i}
 	default:
-		ex = &normalItem{i}
+		qu = &normalItem{i}
 	}
-	return ex
+	return qu
 }
 
 func UpdateQuality(items []*Item) {
