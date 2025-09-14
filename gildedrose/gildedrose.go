@@ -82,8 +82,7 @@ func (n *normalItem) updateQuality() {
 	}
 }
 
-func itemFactory(i *Item) qualityUpdater {
-	var qu qualityUpdater
+func itemFactory(i *Item) (qu qualityUpdater) {
 	switch n := i.Name; n {
 	case "Aged Brie":
 		qu = &agedBrie{i}
@@ -96,7 +95,7 @@ func itemFactory(i *Item) qualityUpdater {
 	default:
 		qu = &normalItem{i}
 	}
-	return qu
+	return
 }
 
 func UpdateQuality(items []*Item) {
