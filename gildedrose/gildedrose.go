@@ -13,9 +13,7 @@ type sulfuras struct{ *Item }
 
 func (s *sulfuras) updateQuality() {
 	s.SellIn -= 1
-	if s.Quality != 80 {
-		s.Quality = 80
-	}
+	s.Quality = 80
 }
 
 type agedBrie struct{ *Item }
@@ -27,9 +25,7 @@ func (a *agedBrie) updateQuality() {
 	} else {
 		a.Quality += 1
 	}
-	if a.Quality > 50 {
-		a.Quality = 50
-	}
+	a.Quality = min(a.Quality, 50)
 }
 
 type backstagePasses struct{ *Item }
@@ -41,13 +37,22 @@ func (b *backstagePasses) updateQuality() {
 		return
 	}
 
-	if b.SellIn < 5 {
+	switch {
+	case b.SellIn < 5:
 		b.Quality += 3
-	} else if b.SellIn < 10 {
+	case b.SellIn < 10:
 		b.Quality += 2
-	} else {
+	default:
 		b.Quality += 1
 	}
+
+	// if b.SellIn < 5 {
+	// 	b.Quality += 3
+	// } else if b.SellIn < 10 {
+	// 	b.Quality += 2
+	// } else {
+	// 	b.Quality += 1
+	// }
 }
 
 type conjured struct{ *Item }
@@ -59,11 +64,7 @@ func (c *conjured) updateQuality() {
 	} else {
 		c.Quality -= 2
 	}
-	if c.Quality > 50 {
-		c.Quality = 50
-	} else if c.Quality < 0 {
-		c.Quality = 0
-	}
+	c.Quality = min(max(c.Quality, 0), 50)
 }
 
 type normalItem struct{ *Item }
@@ -75,27 +76,22 @@ func (n *normalItem) updateQuality() {
 	} else {
 		n.Quality -= 1
 	}
-	if n.Quality > 50 {
-		n.Quality = 50
-	} else if n.Quality < 0 {
-		n.Quality = 0
-	}
+	n.Quality = min(max(n.Quality, 0), 50)
 }
 
-func itemFactory(i *Item) (qu qualityUpdater) {
+func itemFactory(i *Item) qualityUpdater {
 	switch n := i.Name; n {
 	case "Aged Brie":
-		qu = &agedBrie{i}
+		return &agedBrie{i}
 	case "Sulfuras, Hand of Ragnaros":
-		qu = &sulfuras{i}
+		return &sulfuras{i}
 	case "Backstage passes to a TAFKAL80ETC concert":
-		qu = &backstagePasses{i}
+		return &backstagePasses{i}
 	case "Conjured":
-		qu = &conjured{i}
+		return &conjured{i}
 	default:
-		qu = &normalItem{i}
+		return &normalItem{i}
 	}
-	return
 }
 
 func UpdateQuality(items []*Item) {
