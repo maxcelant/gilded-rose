@@ -45,14 +45,6 @@ func (b *backstagePasses) updateQuality() {
 	default:
 		b.Quality += 1
 	}
-
-	// if b.SellIn < 5 {
-	// 	b.Quality += 3
-	// } else if b.SellIn < 10 {
-	// 	b.Quality += 2
-	// } else {
-	// 	b.Quality += 1
-	// }
 }
 
 type conjured struct{ *Item }
